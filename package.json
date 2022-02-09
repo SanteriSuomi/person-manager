@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "cd server && npm install && tsc && nodemon app.js",
+    "start": "npm install && cd server && npm install && tsc && nodemon app.js",
     "build": "cd client && npm install && tsc && npm run build"
   },
   "author": "",
