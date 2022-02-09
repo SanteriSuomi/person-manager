@@ -2,9 +2,9 @@
   "name": "netum_fullstack",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "cd client && npm install && tsc && npm run build && cd .. && cd server && npm install && tsc && nodemon app.js"
+    "scripts": {
+    "start": "cd server && npm install && tsc && nodemon app.js",
+    "build": "cd client && npm install && tsc && npm run build"
   },
   "author": "",
   "license": "ISC"
