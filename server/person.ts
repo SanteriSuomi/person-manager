@@ -14,7 +14,7 @@ router.get("/all", async (request, response) => {
 	}
 });
 
-// Just a helper function because two route functions used very similar bodies.
+// Just a helper function because two route functions below used very similar bodies.
 async function whereQuery(dbQuery: string, request: any, response: any) {
 	const { id, firstname, surname, age } = request.query;
 	if (!(id || firstname || surname || age)) {
@@ -51,6 +51,11 @@ router.delete("/delete", async (request, response) => {
 
 router.post("/new", async (request, response) => {
 	const person = request.body;
+	if (!(person.firstname && person.surname && person.age)) {
+		return response
+			.status(400)
+			.send("Give valid person object in request body");
+	}
 	try {
 		const result = await db.query(
 			"INSERT INTO person (firstname, surname, age) VALUES($1, $2, $3);",
@@ -64,6 +69,37 @@ router.post("/new", async (request, response) => {
 });
 
 // Update the details of a single person
-router.put("/update", async (res, req) => {});
+router.put("/update", async (request, response) => {
+	const { id, firstname, surname, age } = request.query;
+	if (!(id || firstname || surname || age)) {
+		return response
+			.status(400)
+			.send("Give either id, firstname, lastname or age in query");
+	}
+	const person = request.body;
+	if (!(person.firstname && person.surname && person.age)) {
+		return response
+			.status(400)
+			.send("Give valid person object in request body");
+	}
+	try {
+		const result = await db.query(
+			"UPDATE person SET firstname=$1, surname=$2, age=$3 WHERE id=$4 OR firstname=$5 OR surname=$6 OR age=$7; ",
+			[
+				person.firstname,
+				person.surname,
+				person.age,
+				id,
+				firstname,
+				surname,
+				age,
+			]
+		);
+		return response.status(200).send(result.rows);
+	} catch (error) {
+		console.log(error);
+		return response.status(500).send(error);
+	}
+});
 
 export default router;
