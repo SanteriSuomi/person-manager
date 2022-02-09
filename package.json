@@ -2,10 +2,13 @@
   "name": "netum_fullstack",
   "version": "1.0.0",
   "description": "",
-    "scripts": {
-    "start": "npm install -g typescript && cd server && npm install && tsc && nodemon app.js",
+  "scripts": {
+    "start": "cd server && npm install && tsc && nodemon app.js",
     "build": "cd client && npm install && tsc && npm run build"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^4.5.5"
+  }
 }
