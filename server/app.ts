@@ -1,16 +1,16 @@
 import express from "express";
 import path from "path";
+import person from "./person";
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.static(path.resolve(__dirname, "../client/build")));
 
+app.use("/person", person);
+
 app.get("/", (_, res) => {
 	res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
-});
-
-app.get("/world", (req, res) => {
-	res.send("Hello World!");
 });
 
 app.listen(PORT, () => {
