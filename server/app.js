@@ -9,6 +9,7 @@ const person_1 = __importDefault(require("./person"));
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3001;
 app.use(express_1.default.static(path_1.default.resolve(__dirname, "../client/build")));
+app.use(express_1.default.json());
 app.use("/person", person_1.default);
 app.get("/", (_, res) => {
     res.sendFile(path_1.default.resolve(__dirname, "../client/build", "index.html"));

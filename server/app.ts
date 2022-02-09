@@ -6,6 +6,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(express.static(path.resolve(__dirname, "../client/build")));
+app.use(express.json());
 
 app.use("/person", person);
 

@@ -26,26 +26,45 @@ router.get("/all", (request, response) => __awaiter(void 0, void 0, void 0, func
         return response.status(500).send(error);
     }
 }));
+// Just a helper function because two route functions used very similar bodies.
+function paramQuery(dbQuery, request, response) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { id, firstname, surname, age } = request.query;
+        if (!(id || firstname || surname || age)) {
+            return response
+                .status(400)
+                .send("Give either id, firstname, lastname or age in query");
+        }
+        try {
+            const result = yield db_1.default.query(dbQuery, [id, firstname, surname, age]);
+            return response.status(200).send(result.rows);
+        }
+        catch (error) {
+            console.log(error);
+            return response.status(500).send(error);
+        }
+    });
+}
 // Get a single user
 router.get("/single", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, firstname, surname } = request.query;
-    console.log(request.query);
-    if (!(id || firstname || surname)) {
-        return response
-            .status(400)
-            .send("Give either id, firstname or lastname in query");
-    }
+    return paramQuery("SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", request, response);
+}));
+// Delete a user
+router.delete("/delete", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    return paramQuery("DELETE FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", request, response);
+}));
+router.post("/new", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const person = request.body;
+    console.log(person);
     try {
-        const result = yield db_1.default.query("SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3;", [id, firstname, surname]);
-        return response.status(200).send(result.rows);
+        const result = yield db_1.default.query("INSERT INTO person (firstname, surname, age) VALUES($1, $2, $3);", [person.firstname, person.surname, person.age]);
+        return response.status(201).send(result.rows);
     }
     catch (error) {
         console.log(error);
         return response.status(500).send(error);
     }
 }));
-// Delete a user
-router.delete("/delete", (res, req) => __awaiter(void 0, void 0, void 0, function* () { }));
 // Update the details of a single person
 router.put("/update", (res, req) => __awaiter(void 0, void 0, void 0, function* () { }));
 exports.default = router;
