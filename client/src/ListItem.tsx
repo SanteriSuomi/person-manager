@@ -51,7 +51,7 @@ function ListItem({
 					}}
 				></Input>
 			</Td>
-			<Td textAlign={"center"}>
+			<Td textAlign={"center"} minWidth={"100"} maxWidth={"130"}>
 				<Input
 					value={age}
 					onChange={(e) => {

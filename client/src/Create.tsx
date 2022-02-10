@@ -11,11 +11,12 @@ function Create({ createPerson }: { createPerson: Function }) {
 			flexDirection={"column"}
 			justifyContent={"center"}
 			alignItems={"center"}
-			width={["95%", "70%", "55%"]}
 			borderWidth={1}
 			borderRadius={20}
 			borderColor={"black"}
-			padding={"2%"}
+			padding={"1%"}
+			width={["100%", "80%", "70%"]}
+			maxWidth={750}
 		>
 			<Text fontSize={22}>Create Person</Text>
 			<Spacer margin={"1%"}></Spacer>

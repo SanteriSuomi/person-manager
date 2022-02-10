@@ -1,8 +1,6 @@
 import {
-	Container,
 	VStack,
 	Text,
-	Spacer,
 	Modal,
 	ModalOverlay,
 	ModalContent,
@@ -10,6 +8,9 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	useDisclosure,
+	Box,
+	Container,
+	Center,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Create from "./Create";
@@ -91,7 +92,7 @@ function App() {
 	}, []);
 
 	return (
-		<Container maxWidth={"container.xl"} padding={"1%"} centerContent>
+		<Center padding={["0%", "1%", "1%"]}>
 			<Modal isOpen={isOpen} onClose={onClose} isCentered>
 				<ModalOverlay />
 				<ModalContent>
@@ -103,16 +104,15 @@ function App() {
 				</ModalContent>
 			</Modal>
 
-			<Text fontSize={35}>Person Manager</Text>
-			<Spacer margin={"1%"}></Spacer>
 			<VStack spacing={50} width={"100%"}>
+				<Text fontSize={35}>Person Manager</Text>
 				<List
 					personList={personList}
 					deletePerson={deletePerson}
 				></List>
 				<Create createPerson={createPerson}></Create>
 			</VStack>
-		</Container>
+		</Center>
 	);
 }
 
