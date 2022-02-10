@@ -14,9 +14,11 @@ import ListItem from "./ListItem";
 function List({
 	personList,
 	deletePerson,
+	updatePerson,
 }: {
 	personList: Array<IPerson>;
 	deletePerson: Function;
+	updatePerson: Function;
 }) {
 	return (
 		<Flex
@@ -46,6 +48,7 @@ function List({
 						<ListItem
 							person={p}
 							deletePerson={deletePerson}
+							updatePerson={updatePerson}
 							key={index}
 						></ListItem>
 					))}

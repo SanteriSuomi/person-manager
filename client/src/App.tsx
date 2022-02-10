@@ -8,8 +8,6 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	useDisclosure,
-	Box,
-	Container,
 	Center,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -87,6 +85,36 @@ function App() {
 		}
 	};
 
+	const updatePerson = async (
+		id: number,
+		firstname: string,
+		surname: string,
+		age: number
+	) => {
+		try {
+			let result = await fetch(
+				`${process.env.REACT_APP_API_BASE}person/update?id=${id}`,
+				{
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `${process.env.REACT_APP_API_MASTER_KEY}`,
+					},
+					body: JSON.stringify({
+						firstname: firstname,
+						surname: surname,
+						age: age,
+					}),
+				}
+			);
+			if (result.status === 200) {
+				await fetchAll();
+			}
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	useEffect(() => {
 		fetchAll();
 	}, []);
@@ -109,6 +137,7 @@ function App() {
 				<List
 					personList={personList}
 					deletePerson={deletePerson}
+					updatePerson={updatePerson}
 				></List>
 				<Create createPerson={createPerson}></Create>
 			</VStack>

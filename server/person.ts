@@ -92,26 +92,22 @@ router.put("/update", async (request, response) => {
 			.send("Give either id, firstname, lastname or age in query");
 	}
 	const { firstname, surname, age } = request.body;
-	if (!(firstname && surname && age)) {
+	if (!(firstname || surname || age)) {
 		return response
 			.status(400)
 			.send("Give valid person object in request body");
 	}
 	try {
-		const checkExisting = await db.query(
-			"SELECT * FROM person WHERE firstname=$1 AND surname=$2 AND age=$3;",
-			[firstname, surname, age]
-		);
-		if (checkExisting.rows.length > 0) {
-			return response.status(405).send("This person exists already");
-		}
 		let result = await db.query(
-			"SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;",
+			"SELECT * FROM person WHERE id=$1 OR (firstname=$2 AND surname=$3 AND age=$4);",
 			[queryId, queryFirstname, querySurname, queryAge]
 		);
+		if (result.rows.length == 0) {
+			return response.status(400).send("This person doesn't exist");
+		}
 		const existing = result.rows[0];
 		result = await db.query(
-			"UPDATE person SET firstname=$1, surname=$2, age=$3 WHERE id=$4 OR firstname=$5 OR surname=$6 OR age=$7;",
+			"UPDATE person SET firstname=$1, surname=$2, age=$3 WHERE id=$4 OR (firstname=$5 AND surname=$6 AND age=$7);",
 			[
 				firstname ? firstname : existing.firstname,
 				surname ? surname : existing.surname,

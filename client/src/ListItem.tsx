@@ -1,33 +1,21 @@
-import {
-	Tr,
-	Td,
-	Button,
-	Popover,
-	PopoverTrigger,
-	PopoverContent,
-	PopoverHeader,
-	PopoverBody,
-	PopoverArrow,
-	PopoverCloseButton,
-	Text,
-	HStack,
-	VStack,
-	Input,
-} from "@chakra-ui/react";
-import { CloseIcon, AddIcon } from "@chakra-ui/icons";
+import { Tr, Td, Input } from "@chakra-ui/react";
+
 import IPerson from "./Interfaces";
 import { useState } from "react";
+import ListItemPopup from "./ListItemPopup";
 
 function ListItem({
 	person,
 	deletePerson,
+	updatePerson,
 }: {
 	person: IPerson;
 	deletePerson: Function;
+	updatePerson: Function;
 }) {
 	const [isOpen, setIsOpen] = useState(false);
 
-	const [firstname, setFirstname] = useState(person.surname);
+	const [firstname, setFirstname] = useState(person.firstname);
 	const [surname, setSurname] = useState(person.surname);
 	const [age, setAge] = useState(person.age);
 
@@ -68,54 +56,19 @@ function ListItem({
 				></Input>
 			</Td>
 			<Td textAlign={"center"}>
-				<Popover
+				<ListItemPopup
+					person={person}
 					isOpen={isOpen}
-					onClose={() => {
-						setIsOpen(false);
+					setIsOpen={setIsOpen}
+					deletePerson={deletePerson}
+					updatePerson={updatePerson}
+					newPerson={{
+						id: 0,
+						firstname: firstname,
+						surname: surname,
+						age: age,
 					}}
-					closeOnBlur={true}
-				>
-					<PopoverTrigger>
-						<Button
-							size={"sm"}
-							variant={"outline"}
-							onClick={(e) => {
-								e.preventDefault();
-								setIsOpen(true);
-							}}
-						>
-							<AddIcon></AddIcon>
-						</Button>
-					</PopoverTrigger>
-					<PopoverContent width="inherit">
-						<PopoverArrow />
-						<PopoverCloseButton />
-						<PopoverHeader textAlign={"left"} marginRight={5}>
-							Modify Options
-						</PopoverHeader>
-						<PopoverBody>
-							<HStack
-								spacing={2}
-								justifyContent={"center"}
-								alignItems={"center"}
-							>
-								<VStack spacing={2}>
-									<Button
-										size={"sm"}
-										variant={"outline"}
-										onClick={() => {
-											deletePerson(person.id);
-											setIsOpen(false);
-										}}
-									>
-										<CloseIcon color={"red"}></CloseIcon>
-									</Button>
-									<Text>Delete</Text>
-								</VStack>
-							</HStack>
-						</PopoverBody>
-					</PopoverContent>
-				</Popover>
+				></ListItemPopup>
 			</Td>
 		</Tr>
 	);
