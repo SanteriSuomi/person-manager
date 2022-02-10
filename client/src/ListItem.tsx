@@ -12,9 +12,11 @@ import {
 	Text,
 	HStack,
 	VStack,
+	Input,
 } from "@chakra-ui/react";
 import { CloseIcon, AddIcon } from "@chakra-ui/icons";
 import IPerson from "./Interfaces";
+import { useState } from "react";
 
 function ListItem({
 	person,
@@ -23,15 +25,65 @@ function ListItem({
 	person: IPerson;
 	deletePerson: Function;
 }) {
+	const [isOpen, setIsOpen] = useState(false);
+
+	const [firstname, setFirstname] = useState(person.surname);
+	const [surname, setSurname] = useState(person.surname);
+	const [age, setAge] = useState(person.age);
+
 	return (
 		<Tr>
-			<Td>{person.firstname}</Td>
-			<Td>{person.surname}</Td>
-			<Td textAlign={"right"}>{person.age}</Td>
-			<Td textAlign={"right"}>
-				<Popover>
+			<Td textAlign={"center"}>
+				<Input
+					value={firstname}
+					onChange={(e) => {
+						e.preventDefault();
+						setFirstname(e.target.value);
+					}}
+				></Input>
+			</Td>
+			<Td textAlign={"center"}>
+				<Input
+					value={surname}
+					onChange={(e) => {
+						e.preventDefault();
+						setSurname(e.target.value);
+					}}
+				></Input>
+			</Td>
+			<Td textAlign={"center"}>
+				<Input
+					value={age}
+					onChange={(e) => {
+						e.preventDefault();
+						try {
+							let toInt = parseInt(e.target.value);
+							if (!isNaN(toInt)) {
+								setAge(toInt);
+							} else {
+								setAge(0);
+							}
+						} catch (error) {}
+					}}
+				></Input>
+			</Td>
+			<Td textAlign={"center"}>
+				<Popover
+					isOpen={isOpen}
+					onClose={() => {
+						setIsOpen(false);
+					}}
+					closeOnBlur={true}
+				>
 					<PopoverTrigger>
-						<Button size={"sm"} variant={"outline"}>
+						<Button
+							size={"sm"}
+							variant={"outline"}
+							onClick={(e) => {
+								e.preventDefault();
+								setIsOpen(true);
+							}}
+						>
 							<AddIcon></AddIcon>
 						</Button>
 					</PopoverTrigger>
@@ -53,6 +105,7 @@ function ListItem({
 										variant={"outline"}
 										onClick={() => {
 											deletePerson(person.id);
+											setIsOpen(false);
 										}}
 									>
 										<CloseIcon color={"red"}></CloseIcon>
