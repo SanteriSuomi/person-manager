@@ -2,7 +2,9 @@ import express from "express";
 import path from "path";
 import person from "./person";
 
+const cors = require("cors");
 const app = express();
+app.use(cors());
 const PORT = process.env.PORT || 3001;
 
 app.use(express.static(path.resolve(__dirname, "../client/build")));
