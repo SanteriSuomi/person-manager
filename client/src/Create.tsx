@@ -1,6 +1,11 @@
 import { Center, Text, Flex, Input, Button, Spacer } from "@chakra-ui/react";
+import { useState } from "react";
 
-function Create() {
+function Create({ createPerson }: { createPerson: Function }) {
+	const [firstname, setFirstname] = useState("");
+	const [surname, setSurname] = useState("");
+	const [age, setAge] = useState("");
+
 	return (
 		<Flex
 			flexDirection={"column"}
@@ -16,15 +21,39 @@ function Create() {
 			<Spacer margin={"1%"}></Spacer>
 			<Flex flexDirection={"column"} maxWidth={"95%"}>
 				<Flex flexDirection={"row"}>
-					<Input placeholder="Firstname"></Input>
+					<Input
+						placeholder="Firstname"
+						onChange={(e) => {
+							e.preventDefault();
+							setFirstname(e.target.value);
+						}}
+					></Input>
 					<Spacer margin={"1%"}></Spacer>
-					<Input placeholder="Surname"></Input>
+					<Input
+						placeholder="Surname"
+						onChange={(e) => {
+							e.preventDefault();
+							setSurname(e.target.value);
+						}}
+					></Input>
 					<Spacer margin={"1%"}></Spacer>
-					<Input placeholder="Age"></Input>
+					<Input
+						placeholder="Age"
+						onChange={(e) => {
+							e.preventDefault();
+							setAge(e.target.value);
+						}}
+					></Input>
 				</Flex>
 				<Spacer margin={"1%"}></Spacer>
 				<Center>
-					<Button maxWidth={"90px"}>
+					<Button
+						maxWidth={"90px"}
+						onClick={(e) => {
+							e.preventDefault();
+							createPerson(firstname, surname, age);
+						}}
+					>
 						<Text fontSize={20}>Submit</Text>
 					</Button>
 				</Center>

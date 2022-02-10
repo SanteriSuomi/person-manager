@@ -11,7 +11,13 @@ import {
 import IPerson from "./Interfaces";
 import ListItem from "./ListItem";
 
-function List({ personList }: { personList: Array<IPerson> }) {
+function List({
+	personList,
+	deletePerson,
+}: {
+	personList: Array<IPerson>;
+	deletePerson: Function;
+}) {
 	return (
 		<Flex
 			flexDirection={"column"}
@@ -36,7 +42,11 @@ function List({ personList }: { personList: Array<IPerson> }) {
 				</Thead>
 				<Tbody>
 					{personList.map((p, index) => (
-						<ListItem person={p} key={index}></ListItem>
+						<ListItem
+							person={p}
+							deletePerson={deletePerson}
+							key={index}
+						></ListItem>
 					))}
 				</Tbody>
 			</Table>

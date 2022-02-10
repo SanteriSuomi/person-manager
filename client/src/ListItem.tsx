@@ -16,7 +16,13 @@ import {
 import { CloseIcon, AddIcon } from "@chakra-ui/icons";
 import IPerson from "./Interfaces";
 
-function ListItem({ person }: { person: IPerson }) {
+function ListItem({
+	person,
+	deletePerson,
+}: {
+	person: IPerson;
+	deletePerson: Function;
+}) {
 	return (
 		<Tr>
 			<Td>{person.firstname}</Td>
@@ -46,7 +52,7 @@ function ListItem({ person }: { person: IPerson }) {
 										size={"sm"}
 										variant={"outline"}
 										onClick={() => {
-											console.log(person);
+											deletePerson(person.id);
 										}}
 									>
 										<CloseIcon color={"red"}></CloseIcon>
