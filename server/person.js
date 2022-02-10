@@ -15,11 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const db_1 = __importDefault(require("./db"));
 const middleware_1 = __importDefault(require("./middleware"));
-require("dotenv").config();
 const router = express_1.default.Router();
 router.use(middleware_1.default.authorize);
 // Get all users
-router.get("/all", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+router.get("/all", (_, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield db_1.default.query("SELECT * FROM person;", []);
         return response.status(200).send(result.rows);

@@ -1,7 +1,7 @@
 {
   "name": "netum_fullstack",
   "version": "1.0.0",
-  "description": "",
+  "description": "Full stack app for netum summer internship application",
   "scripts": {
     "start": "npm install && cd server && npm install && tsc && nodemon app.js",
     "build": "cd client && npm install && tsc && npm run build"
