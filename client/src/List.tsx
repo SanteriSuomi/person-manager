@@ -7,10 +7,12 @@ import {
 	Tbody,
 	Tr,
 	Th,
-	Td,
 } from "@chakra-ui/react";
+import IPerson from "./Interfaces";
+import ListItem from "./ListItem";
 
-function List() {
+function List({ personList }: { personList: Array<IPerson> }) {
+	console.log(personList);
 	return (
 		<Flex
 			flexDirection={"column"}
@@ -33,11 +35,9 @@ function List() {
 					</Tr>
 				</Thead>
 				<Tbody>
-					<Tr>
-						<Td>Santeri</Td>
-						<Td>Suomi</Td>
-						<Td isNumeric>23</Td>
-					</Tr>
+					{personList.map((p, index) => (
+						<ListItem person={p} key={index}></ListItem>
+					))}
 				</Tbody>
 			</Table>
 		</Flex>

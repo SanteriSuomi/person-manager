@@ -8,7 +8,6 @@ function App() {
 
 	useEffect(() => {
 		const fetchAll = async () => {
-			console.log(`${process.env.REACT_APP_API_BASE}person/all`);
 			try {
 				let result = await fetch(
 					`${process.env.REACT_APP_API_BASE}person/all`,
@@ -18,7 +17,8 @@ function App() {
 						},
 					}
 				);
-				console.log(result.json());
+				let data = await result.json();
+				setPersonList(data);
 			} catch (error) {
 				console.log(error);
 			}
@@ -31,8 +31,8 @@ function App() {
 			<Text fontSize={35}>Person Manager</Text>
 			<Spacer margin={"1%"}></Spacer>
 			<VStack spacing={50} width={"100%"}>
+				<List personList={personList}></List>
 				<Create></Create>
-				<List></List>
 			</VStack>
 		</Container>
 	);
