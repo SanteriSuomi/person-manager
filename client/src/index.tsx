@@ -1,11 +1,27 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
+
+// Modify base chakra ui popover to make it responsive
+const theme = extendTheme({
+	components: {
+		Popover: {
+			variants: {
+				responsive: {
+					popper: {
+						maxWidth: "unset",
+						width: "unset",
+					},
+				},
+			},
+		},
+	},
+});
 
 ReactDOM.render(
 	<React.StrictMode>
-		<ChakraProvider>
+		<ChakraProvider theme={theme}>
 			<App />
 		</ChakraProvider>
 	</React.StrictMode>,

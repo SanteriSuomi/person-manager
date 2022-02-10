@@ -12,7 +12,6 @@ import IPerson from "./Interfaces";
 import ListItem from "./ListItem";
 
 function List({ personList }: { personList: Array<IPerson> }) {
-	console.log(personList);
 	return (
 		<Flex
 			flexDirection={"column"}
@@ -32,6 +31,7 @@ function List({ personList }: { personList: Array<IPerson> }) {
 						<Th>Firstname</Th>
 						<Th>Surname</Th>
 						<Th isNumeric>Age</Th>
+						<Th isNumeric>Modify</Th>
 					</Tr>
 				</Thead>
 				<Tbody>
