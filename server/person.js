@@ -14,7 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const db_1 = __importDefault(require("./db"));
+const middleware_1 = __importDefault(require("./middleware"));
+require("dotenv").config();
 const router = express_1.default.Router();
+router.use(middleware_1.default.authorize);
 // Get all users
 router.get("/all", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -27,7 +30,7 @@ router.get("/all", (request, response) => __awaiter(void 0, void 0, void 0, func
     }
 }));
 // Just a helper function because two route functions below used very similar bodies.
-function whereQuery(dbQuery, request, response) {
+function fromQuery(dbQuery, request, response) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id, firstname, surname, age } = request.query;
         if (!(id || firstname || surname || age)) {
@@ -47,11 +50,11 @@ function whereQuery(dbQuery, request, response) {
 }
 // Get a single user
 router.get("/single", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    return whereQuery("SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", request, response);
+    return fromQuery("SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", request, response);
 }));
 // Delete a user
 router.delete("/delete", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    return whereQuery("DELETE FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", request, response);
+    return fromQuery("DELETE FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", request, response);
 }));
 router.post("/new", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const person = request.body;
@@ -78,16 +81,18 @@ router.put("/update", (request, response) => __awaiter(void 0, void 0, void 0, f
             .send("Give either id, firstname, lastname or age in query");
     }
     const person = request.body;
-    if (!(person.firstname && person.surname && person.age)) {
+    if (!(person.firstname || person.surname || person.age)) {
         return response
             .status(400)
-            .send("Give valid person object in request body");
+            .send("Give valid person object in request body (firstname and/or surname and/or age");
     }
     try {
-        const result = yield db_1.default.query("UPDATE person SET firstname=$1, surname=$2, age=$3 WHERE id=$4 OR firstname=$5 OR surname=$6 OR age=$7; ", [
-            person.firstname,
-            person.surname,
-            person.age,
+        let result = yield db_1.default.query("SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", [id, firstname, surname, age]);
+        const existing = result.rows[0];
+        result = yield db_1.default.query("UPDATE person SET firstname=$1, surname=$2, age=$3 WHERE id=$4 OR firstname=$5 OR surname=$6 OR age=$7;", [
+            person.firstname ? person.firstname : existing.firstname,
+            person.surname ? person.surname : existing.surname,
+            person.age ? person.age : existing.age,
             id,
             firstname,
             surname,
