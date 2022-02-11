@@ -23,6 +23,8 @@ function ListItem({
 		<Tr>
 			<Td textAlign={"center"}>
 				<Input
+					borderWidth={1}
+					borderColor={"black"}
 					value={firstname}
 					onChange={(e) => {
 						e.preventDefault();
@@ -32,6 +34,8 @@ function ListItem({
 			</Td>
 			<Td textAlign={"center"}>
 				<Input
+					borderWidth={1}
+					borderColor={"black"}
 					value={surname}
 					onChange={(e) => {
 						e.preventDefault();
@@ -41,6 +45,8 @@ function ListItem({
 			</Td>
 			<Td textAlign={"center"} minWidth={"100"} maxWidth={"130"}>
 				<Input
+					borderWidth={1}
+					borderColor={"black"}
 					value={age}
 					onChange={(e) => {
 						e.preventDefault();

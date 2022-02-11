@@ -44,12 +44,12 @@ function List({
 					</Tr>
 				</Thead>
 				<Tbody>
-					{personList.map((p, index) => (
+					{personList.map((p) => (
 						<ListItem
 							person={p}
 							deletePerson={deletePerson}
 							updatePerson={updatePerson}
-							key={index}
+							key={p.id}
 						></ListItem>
 					))}
 				</Tbody>

@@ -40,6 +40,8 @@ function ListItemPopup({
 		>
 			<PopoverTrigger>
 				<Button
+					borderWidth={1}
+					borderColor={"black"}
 					size={"sm"}
 					variant={"outline"}
 					onClick={(e) => {

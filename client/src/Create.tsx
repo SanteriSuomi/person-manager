@@ -23,6 +23,8 @@ function Create({ createPerson }: { createPerson: Function }) {
 			<Flex flexDirection={"column"} maxWidth={"95%"}>
 				<Flex flexDirection={"row"}>
 					<Input
+						borderWidth={1}
+						borderColor={"black"}
 						placeholder="Firstname"
 						onChange={(e) => {
 							e.preventDefault();
@@ -31,6 +33,8 @@ function Create({ createPerson }: { createPerson: Function }) {
 					></Input>
 					<Spacer margin={"1%"}></Spacer>
 					<Input
+						borderWidth={1}
+						borderColor={"black"}
 						placeholder="Surname"
 						onChange={(e) => {
 							e.preventDefault();
@@ -39,6 +43,8 @@ function Create({ createPerson }: { createPerson: Function }) {
 					></Input>
 					<Spacer margin={"1%"}></Spacer>
 					<Input
+						borderWidth={1}
+						borderColor={"black"}
 						placeholder="Age"
 						onChange={(e) => {
 							e.preventDefault();
