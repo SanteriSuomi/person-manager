@@ -1,6 +1,6 @@
 # person-manager
 
-Simple fullstack application for Netum summer internship
+Simple fullstack application for Netum summer internship application
 
 Language: Typescript
 
