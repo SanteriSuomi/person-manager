@@ -9,3 +9,5 @@ Backend: Node, Express, PostgreSQL
 Frontend: React, Chakra UI
 
 Hosting: Heroku
+
+Known bugs: Mobile UI could be better, clunky sorting
