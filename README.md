@@ -4,7 +4,7 @@ Simple fullstack application for Netum summer internship
 
 Language: Typescript
 
-Backend: Node, Express
+Backend: Node, Express, PostgreSQL
 
 Frontend: React, Chakra UI
 
