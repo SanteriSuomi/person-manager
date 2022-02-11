@@ -46,8 +46,9 @@ function App() {
 					},
 				}
 			);
-			if (result.ok) {
-				await fetchAll();
+			if (result.status >= 200 && result.status < 300) {
+				let data = await result.json();
+				setPersonList(data);
 			}
 		} catch (error) {
 			console.log(error);
@@ -75,9 +76,10 @@ function App() {
 					}),
 				}
 			);
-			if (result.status === 201) {
-				await fetchAll();
-			} else if (result.status === 405) {
+			if (result.status >= 200 && result.status < 300) {
+				let data = await result.json();
+				setPersonList(data);
+			} else if (result.status > 400) {
 				onOpen();
 			}
 		} catch (error) {
@@ -107,8 +109,9 @@ function App() {
 					}),
 				}
 			);
-			if (result.status === 200) {
-				await fetchAll();
+			if (result.status >= 200 && result.status < 300) {
+				let data = await result.json();
+				setPersonList(data);
 			}
 		} catch (error) {
 			console.log(error);

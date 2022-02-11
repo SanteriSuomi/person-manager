@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.use(middleware.authorize);
 
-// Get all users
+// Get all people
 router.get("/all", async (_, response) => {
 	try {
 		const result = await db.query("SELECT * FROM person;", []);
@@ -17,8 +17,8 @@ router.get("/all", async (_, response) => {
 	}
 });
 
-// Just a helper function because two route functions below used very similar bodies.
-async function fromQuery(dbQuery: string, request: any, response: any) {
+// Get a single person according to query
+router.get("/single", async (request, response) => {
 	const { id, firstname, surname, age } = request.query;
 	if (!(id || firstname || surname || age)) {
 		return response
@@ -26,32 +26,39 @@ async function fromQuery(dbQuery: string, request: any, response: any) {
 			.send("Give either id, firstname, lastname or age in query");
 	}
 	try {
-		const result = await db.query(dbQuery, [id, firstname, surname, age]);
+		const result = await db.query(
+			"SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;",
+			[id, firstname, surname, age]
+		);
 		return response.status(200).send(result.rows);
 	} catch (error) {
 		console.log(error);
 		return response.status(500).send(error);
 	}
-}
-
-// Get a single user
-router.get("/single", async (request, response) => {
-	return fromQuery(
-		"SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;",
-		request,
-		response
-	);
 });
 
-// Delete a user
+// Delete a person
 router.delete("/delete", async (request, response) => {
-	return fromQuery(
-		"DELETE FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;",
-		request,
-		response
-	);
+	const { id, firstname, surname, age } = request.query;
+	if (!(id || firstname || surname || age)) {
+		return response
+			.status(400)
+			.send("Give either id, firstname, lastname or age in query");
+	}
+	try {
+		await db.query(
+			"DELETE FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;",
+			[id, firstname, surname, age]
+		);
+		const result = await db.query("SELECT * FROM person;", []);
+		return response.status(200).send(result.rows);
+	} catch (error) {
+		console.log(error);
+		return response.status(500).send(error);
+	}
 });
 
+// Insert a new person
 router.post("/new", async (request, response) => {
 	const { firstname, surname, age } = request.body;
 	if (!(firstname && surname && age)) {
@@ -67,10 +74,11 @@ router.post("/new", async (request, response) => {
 		if (checkExisting.rows.length > 0) {
 			return response.status(405).send("This person exists already");
 		}
-		const result = await db.query(
+		await db.query(
 			"INSERT INTO person (firstname, surname, age) VALUES($1, $2, $3);",
 			[firstname, surname, age]
 		);
+		const result = await db.query("SELECT * FROM person;", []);
 		return response.status(201).send(result.rows);
 	} catch (error) {
 		console.log(error);
@@ -78,7 +86,7 @@ router.post("/new", async (request, response) => {
 	}
 });
 
-// Update the details of a single person
+// Update the details of a single person. Can update any number of persons' details using a single query.
 router.put("/update", async (request, response) => {
 	const {
 		id: queryId,
@@ -106,7 +114,7 @@ router.put("/update", async (request, response) => {
 			return response.status(400).send("This person doesn't exist");
 		}
 		const existing = result.rows[0];
-		result = await db.query(
+		await db.query(
 			"UPDATE person SET firstname=$1, surname=$2, age=$3 WHERE id=$4 OR (firstname=$5 AND surname=$6 AND age=$7);",
 			[
 				firstname ? firstname : existing.firstname,
@@ -118,6 +126,7 @@ router.put("/update", async (request, response) => {
 				queryAge,
 			]
 		);
+		result = await db.query("SELECT * FROM person;", []);
 		return response.status(200).send(result.rows);
 	} catch (error) {
 		console.log(error);

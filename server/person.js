@@ -17,7 +17,7 @@ const db_1 = __importDefault(require("./db"));
 const middleware_1 = __importDefault(require("./middleware"));
 const router = express_1.default.Router();
 router.use(middleware_1.default.authorize);
-// Get all users
+// Get all people
 router.get("/all", (_, response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield db_1.default.query("SELECT * FROM person;", []);
@@ -28,33 +28,42 @@ router.get("/all", (_, response) => __awaiter(void 0, void 0, void 0, function* 
         return response.status(500).send(error);
     }
 }));
-// Just a helper function because two route functions below used very similar bodies.
-function fromQuery(dbQuery, request, response) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { id, firstname, surname, age } = request.query;
-        if (!(id || firstname || surname || age)) {
-            return response
-                .status(400)
-                .send("Give either id, firstname, lastname or age in query");
-        }
-        try {
-            const result = yield db_1.default.query(dbQuery, [id, firstname, surname, age]);
-            return response.status(200).send(result.rows);
-        }
-        catch (error) {
-            console.log(error);
-            return response.status(500).send(error);
-        }
-    });
-}
-// Get a single user
+// Get a single person according to query
 router.get("/single", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    return fromQuery("SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", request, response);
+    const { id, firstname, surname, age } = request.query;
+    if (!(id || firstname || surname || age)) {
+        return response
+            .status(400)
+            .send("Give either id, firstname, lastname or age in query");
+    }
+    try {
+        const result = yield db_1.default.query("SELECT * FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", [id, firstname, surname, age]);
+        return response.status(200).send(result.rows);
+    }
+    catch (error) {
+        console.log(error);
+        return response.status(500).send(error);
+    }
 }));
-// Delete a user
+// Delete a person
 router.delete("/delete", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    return fromQuery("DELETE FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", request, response);
+    const { id, firstname, surname, age } = request.query;
+    if (!(id || firstname || surname || age)) {
+        return response
+            .status(400)
+            .send("Give either id, firstname, lastname or age in query");
+    }
+    try {
+        yield db_1.default.query("DELETE FROM person WHERE id=$1 OR firstname=$2 OR surname=$3 OR age=$4;", [id, firstname, surname, age]);
+        const result = yield db_1.default.query("SELECT * FROM person;", []);
+        return response.status(200).send(result.rows);
+    }
+    catch (error) {
+        console.log(error);
+        return response.status(500).send(error);
+    }
 }));
+// Insert a new person
 router.post("/new", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { firstname, surname, age } = request.body;
     if (!(firstname && surname && age)) {
@@ -67,7 +76,8 @@ router.post("/new", (request, response) => __awaiter(void 0, void 0, void 0, fun
         if (checkExisting.rows.length > 0) {
             return response.status(405).send("This person exists already");
         }
-        const result = yield db_1.default.query("INSERT INTO person (firstname, surname, age) VALUES($1, $2, $3);", [firstname, surname, age]);
+        yield db_1.default.query("INSERT INTO person (firstname, surname, age) VALUES($1, $2, $3);", [firstname, surname, age]);
+        const result = yield db_1.default.query("SELECT * FROM person;", []);
         return response.status(201).send(result.rows);
     }
     catch (error) {
@@ -75,7 +85,7 @@ router.post("/new", (request, response) => __awaiter(void 0, void 0, void 0, fun
         return response.status(500).send(error);
     }
 }));
-// Update the details of a single person
+// Update the details of a single person. Can update any number of persons' details using a single query.
 router.put("/update", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
     const { id: queryId, firstname: queryFirstname, surname: querySurname, age: queryAge, } = request.query;
     if (!(queryId || queryFirstname || querySurname || queryAge)) {
@@ -95,7 +105,7 @@ router.put("/update", (request, response) => __awaiter(void 0, void 0, void 0, f
             return response.status(400).send("This person doesn't exist");
         }
         const existing = result.rows[0];
-        result = yield db_1.default.query("UPDATE person SET firstname=$1, surname=$2, age=$3 WHERE id=$4 OR (firstname=$5 AND surname=$6 AND age=$7);", [
+        yield db_1.default.query("UPDATE person SET firstname=$1, surname=$2, age=$3 WHERE id=$4 OR (firstname=$5 AND surname=$6 AND age=$7);", [
             firstname ? firstname : existing.firstname,
             surname ? surname : existing.surname,
             age ? age : existing.age,
@@ -104,6 +114,7 @@ router.put("/update", (request, response) => __awaiter(void 0, void 0, void 0, f
             querySurname,
             queryAge,
         ]);
+        result = yield db_1.default.query("SELECT * FROM person;", []);
         return response.status(200).send(result.rows);
     }
     catch (error) {

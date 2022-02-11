@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const pg_1 = require("pg");
+const { Pool } = require("pg");
 require("dotenv").config();
 const connectionString = process.env.DATABASE_URI;
-const pool = new pg_1.Pool({ connectionString, ssl: { rejectUnauthorized: false } });
+const pool = new Pool({ connectionString, ssl: { rejectUnauthorized: false } });
 exports.default = {
     query: (text, params) => __awaiter(void 0, void 0, void 0, function* () {
         return pool.query(text, params);
