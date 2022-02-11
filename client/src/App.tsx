@@ -12,11 +12,61 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import Create from "./Create";
+import IPerson from "./Interfaces";
 import List from "./List";
+import { SORT_MODE, SORT_METHOD } from "./SortConstants";
 
 function App() {
-	const [personList, setPersonList] = useState([]);
+	const [personList, setPersonList]: [Array<IPerson>, Function] = useState(
+		[]
+	);
+
 	const { isOpen, onOpen, onClose } = useDisclosure();
+
+	const [sortData, setSortData] = useState({
+		mode: SORT_MODE.NONE,
+		method: SORT_METHOD.NONE,
+	});
+
+	const setPersonListWithSort = (newPersonList: Array<IPerson>) => {
+		switch (sortData.mode) {
+			case SORT_MODE.FIRSTNAME:
+				compare((a: any, b: any) => {
+					return a.firstname.localeCompare(b.firstname);
+				});
+				break;
+			case SORT_MODE.SURNAME:
+				compare((a: any, b: any) => {
+					return a.surname.localeCompare(b.surname);
+				});
+				break;
+			case SORT_MODE.AGE:
+				compare((a: any, b: any) => {
+					return a.age - b.age;
+				});
+				break;
+			default:
+				break;
+		}
+		setPersonList(newPersonList);
+
+		function compare(compareFunc: Function) {
+			if (sortData.method === SORT_METHOD.UP) {
+				newPersonList.sort((a: IPerson, b: IPerson) => {
+					return compareFunc(a, b);
+				});
+			} else {
+				newPersonList.sort((a: IPerson, b: IPerson) => {
+					return compareFunc(b, a);
+				});
+			}
+		}
+	};
+
+	const setSortDataAndSort = (newSortData: any) => {
+		setSortData(newSortData);
+		setPersonListWithSort(Array.from(personList));
+	};
 
 	const fetchAll = async () => {
 		try {
@@ -29,7 +79,7 @@ function App() {
 				}
 			);
 			let data = await result.json();
-			setPersonList(data);
+			setPersonListWithSort(data);
 		} catch (error) {
 			console.log(error);
 		}
@@ -48,7 +98,7 @@ function App() {
 			);
 			if (result.status >= 200 && result.status < 300) {
 				let data = await result.json();
-				setPersonList(data);
+				setPersonListWithSort(data);
 			}
 		} catch (error) {
 			console.log(error);
@@ -78,7 +128,7 @@ function App() {
 			);
 			if (result.status >= 200 && result.status < 300) {
 				let data = await result.json();
-				setPersonList(data);
+				setPersonListWithSort(data);
 			} else if (result.status > 400) {
 				onOpen();
 			}
@@ -111,7 +161,7 @@ function App() {
 			);
 			if (result.status >= 200 && result.status < 300) {
 				let data = await result.json();
-				setPersonList(data);
+				setPersonListWithSort(data);
 			}
 		} catch (error) {
 			console.log(error);
@@ -141,6 +191,8 @@ function App() {
 					personList={personList}
 					deletePerson={deletePerson}
 					updatePerson={updatePerson}
+					sortData={sortData}
+					setSortDataAndSort={setSortDataAndSort}
 				></List>
 				<Create createPerson={createPerson}></Create>
 			</VStack>
